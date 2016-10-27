@@ -125,14 +125,18 @@ write.table(SubSetDS, file = "SubSetDS.txt", append = FALSE, quote = F, sep = " 
 #         }
 #     }
 # }
+# get colmeann for the sub sets
 getMean<- function(ASDS){
     tempDS <- numeric()
     for(i in 3:length(ASDS)){
-        tempDS[col_names[i]] = mean(ASDS[[col_names[i]]])
+        tempDS[[col_names[i]]] = mean(ASDS[[col_names[i]]])
     }
     tempDS
 }
+# create subsets for activity and subject and get mean for the columns
 p_ds <- split(SubSetDS, SubSetDS[,c('activity','subject')])  %>% sapply(getMean)
+# as the p_ds holds a matris with 79 rows and 180 cols. it has to be converted in to a dataframe on 180 rows and 81 columns 
+# add subject and activity to the DS
 act <- character()
 subj <- character()
 for(act_sub in strsplit(colnames(p_ds),"\\.")){
@@ -140,6 +144,7 @@ for(act_sub in strsplit(colnames(p_ds),"\\.")){
     subj <- c(subj, act_sub[2])
 }
 avgSubset <- data.frame(activity = factor(act), subject = factor(subj))
+# add the rest of the columns to the DS
 sub_sets <- rownames(p_ds)
 
 for(i in 1:length(sub_sets)){
